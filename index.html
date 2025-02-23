@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Time Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+    <main class="container container_white_theme">
+        <section class="system_controls">
+            <div><button onclick="exportTableToXLSX()" class="button">Export data to Excel</button>
+            <button onclick="nextMonth()" class="button">Get to the next month :)</button>
+            <button onclick="previousMonth()" class="button">Previous month from DB</button>
+            <label class="toggle_box">
+                <input type="checkbox" id="checkbox">
+                <div class="circle" style="display: flex; justify-content: center; align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/></svg>
+                </div>
+            </label>
+            <span class="workTime">Enter required work hours: <input type="number" id="workTimeInput" size="1"></span>
+            <span class="openingHour">Godzina otwarcia: <input type="time" id="openingHour"></span>
+            <span class='closingHour'>Godzina zamknięcia: <input type="time" id="closingHour"></span>
+            </div>
+        </section>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>In</th>
+                    <th>Out</th>
+                    <th>Surplus/Shortage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- content is managed by javascript ;3 -->
+            </tbody>
+        </table>
+        <section class="summary">
+            <div class="month_summary">
+                <h3>Monthly summary</h3>
+                <div>
+                    <!-- łączna liczba dni roboczych -->
+                    <span style="font-weight: bold;">Amount of working days: </span>
+                    <span id="amountOfWorkingDays" style="background-color: rgba(218, 238, 144, 0.63); border-radius: 15px; padding-inline: 6px;"></span>
+                </div>
+                <div>
+                    <!-- łączna liczba weekendów -->
+                    <span style="font-weight: bold;">Amount of weekends: </span>
+                    <span id="amountOfWeekends" style="background-color: rgba(144, 238, 144, 0.63); border-radius: 15px; padding-inline: 6px;"></span>
+                </div>
+                <div>
+                    <!-- łączna liczba dni wolnych -->
+                    <span style="font-weight: bold;">Amount of days off: </span>
+                    <span id="amountOfDaysOff" style="background-color: rgba(144, 238, 144, 0.63); border-radius: 15px; padding-inline: 6px;"></span>
+                </div>
+                <div>
+                    <!-- liczba łącznych nadgodzin/deficytów -->
+                    <span style="font-weight: bold;">Total surplus/shortage: </span>
+                    <span id="totalSurplusElement">Nothing yet!</span>
+                </div>
+            </div>
+            <div class="month_summary">
+                <h3>Yearly summary</h3>
+                <div>
+                    <!-- łączna liczba dni roboczych -->
+                    <span style="font-weight: bold;">Amount of working days: </span>
+                    <span id="yearlyAmountOfWorkingDays" style="background-color: rgba(218, 238, 144, 0.63); border-radius: 15px; padding-inline: 6px;"></span>
+                </div>
+                <div>
+                    <!-- łączna liczba weekendów -->
+                    <span style="font-weight: bold;">Amount of weekends: </span>
+                    <span id="yearlyAmountOfWeekends" style="background-color: rgba(144, 238, 144, 0.63); border-radius: 15px; padding-inline: 6px;"></span>
+                </div>
+                <div>
+                    <!-- łączna liczba dni wolnych -->
+                    <span style="font-weight: bold;">Amount of days off: </span>
+                    <span id="yearlyAmountOfDaysOff" style="background-color: rgba(144, 238, 144, 0.63); border-radius: 15px; padding-inline: 6px;"></span>
+                </div>
+                <div>
+                    <!-- liczba łącznych nadgodzin/deficytów -->
+                    <span style="font-weight: bold;">Total surplus/shortage: </span>
+                    <span id="totalYearlySurplusElement">Nothing yet!</span>
+                </div>
+            </div>
+            <div class="how_to_use">
+                <h3>How to use:</h3>
+                <span><span id='thisColorElement'>This color</span>in table shows current day</span>
+            </div>
+        </section>
+        <!-- content managed by javascript too ;3 -->
+        <div class="notifications"></div>
+    </div>
+</body>
+</html>
