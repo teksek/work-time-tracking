@@ -1,2 +1,2 @@
 https://www.ontheclock.com/
-drobna inspiracja ;3
+drobna inspiracja
