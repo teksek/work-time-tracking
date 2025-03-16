@@ -9,6 +9,9 @@ let validTimeIn = false;
 let validTimeOut = false;
 let totalSurplusInMinutes = 0;
 let totalSurplus = 0;
+let yearTotalSurplusInMinutes = 0;
+let yearTotalSurplus = 0;
+let yearCalculatedByYearlySummary;
 let isTheFirstMonday = false;
 let checkTimeOutValid = 0;
 let isThereCurrentDay = false;
@@ -29,16 +32,15 @@ function initialization() {
     };
     daysOfThisMonth = getDays(date.getFullYear(), date.getMonth() + 1);
 
-    addThemeToggleFunctionality();
-    themeToggle();
-
     if(!isThisMonthSaved()) {
         getWorkingDays();
-        
     } else {
         jsonData = isThisMonthSaved();
         loadMonth(jsonData);
     }
+
+    addThemeToggleFunctionality();
+    themeToggle();
 
     addWorkTimeInputFunctionality();
     workTimeSet();
@@ -188,7 +190,6 @@ function validateTime(line, inOrOut) {
                     canUpdateSurplusOrNo(line);
                 }
             } else {
-                console.log("test1");
                 const newPopup = new Popup("Wrong time! You've just typed time after our company closes!", "error");
                 newPopup.createElement();
             }
@@ -221,7 +222,6 @@ function validateTime(line, inOrOut) {
 }
 
 function canUpdateSurplusOrNo(line) {
-    console.log(validTimeIn, validTimeOut);
     if(validTimeIn && validTimeOut)
         updateSurplus(line)
     else if(validTimeIn && !validTimeOut) {
@@ -284,7 +284,7 @@ function timeDifferenceSystem(timeIn, timeOut) {
 
 function updateTotalSurplus() {
     const totalSurplusElement = document.querySelector('#totalSurplusElement');
-
+    
     totalSurplusInMinutes = 0;
     allLines = document.querySelectorAll('.day');
     allLines = Array.from(allLines);
@@ -337,9 +337,12 @@ function updateYearlySummary() {
     
     yearlyWorkingDays = [];
     yearlyWeekends = [];
+    yearTotalSurplus = 0;
+    yearTotalSurplusInMinutes = 0;
 
     for(let i = 0; i < 12; i++) {
         let testDate = new Date(date.getFullYear(), i, 1);
+        yearCalculatedByYearlySummary = date.getFullYear();
         const getDays = (year, month) => {
             return new Date(year, month, 0).getDate();
         };
@@ -597,6 +600,8 @@ function nextMonth() {
     saveThisMonthToLocalStorage();
 
     date = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+    if(date.getFullYear() != yearCalculatedByYearlySummary) 
+        updateYearlySummary();
     removeMonthLeavings();
     initialization();
     themeToggle();
@@ -644,19 +649,19 @@ function previousMonth() {
     monthName = monthName.charAt(0).toUpperCase() + monthName.slice(1);
 
     const fileName = `${monthName}_${date.getFullYear()}`;
-    try {
-        const savedData = localStorage.getItem(`${fileName}`);
-        if (savedData) {
-            let jsonData = JSON.parse(savedData);
-            date = new Date(date.getFullYear(), monthNumber, 1);
-            removeMonthLeavings();
-            loadMonth(jsonData);
-        } else {
-            throw "We don't have previous months saved in our database!";
-        }
-    } catch(error) {
-        const newPopup = new Popup(error, "error");
-        newPopup.createElement();
+
+    const savedData = localStorage.getItem(`${fileName}`);
+    if (savedData) {
+        let jsonData = JSON.parse(savedData);
+        date = new Date(date.getFullYear(), monthNumber, 1);
+        removeMonthLeavings();
+        loadMonth(jsonData);
+    } else {
+        // throw "We don't have previous months saved in our database!";
+        saveThisMonthToLocalStorage();
+        date = new Date(date.getFullYear(), date.getMonth() - 1, 1);
+        removeMonthLeavings();
+        initialization();
     }
 }
 
@@ -679,6 +684,8 @@ function exportTableToXLSX() {
     // exporting our workbook to xlsx file (native Excel format)
     XLSX.writeFile(workbook, `${filename}.xlsx`);
 }
+
+
 
 function saveThisMonthToLocalStorage() {
     const fileName = `${date.toLocaleString('en-us', { month: 'long' })}_${date.getFullYear()}`;
@@ -809,12 +816,3 @@ class Popup {
         }, 3000)
     }
 }
-
-
-
-
-// TODO: mozna jeszcze dodac funkcje raportu z całego roku zeby poszlo do excela do roznych arkuszy ale w jednym skoroszycie
-// TODO: dodac yearly summary po prawo
-// TODO: przerobić ten kod na kod obiektowy 
-// TODO: dodać możliwość ukrycia panelu how to use przez usuniecie elementu, i wstawi sie na jego miejsce automatycznie przez justify content space between yearly summary
-// TODO: stworzyć diagram/mapę myśli do tego projektu, żeby wytlumaczyć jak on działa, jak funkcje się ze sobą komunikują

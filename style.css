@@ -99,9 +99,14 @@ thead {
     top: 20px;
 }
 
+.yearly_summary {
+    top: 30%;
+}
+
 .how_to_use {
+    top: 50%;
     margin-bottom: 20px;
-    bottom: 0;
+    /* bottom: 0; */
 }
 
 .system_controls {
